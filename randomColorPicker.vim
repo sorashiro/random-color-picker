@@ -20,11 +20,13 @@ if g:os == 'linux'
     let g:plugin_path=$HOME.'/.vim/plugin'
     let g:slash='/'
     let g:love_path=g:plugin_path.'/.love'
+    let g:like_path=g:plugin_path.'/.like'
     let g:hate_path=g:plugin_path.'/.hate'
 elseif g:os == 'win'
     let g:plugin_path=$HOME.'/vimfiles/plugin'
     let g:slash='\'
     let g:love_path=g:plugin_path.'\love.txt'
+    let g:like_path=g:plugin_path.'\like.txt'
     let g:hate_path=g:plugin_path.'\hate.txt'
 endif
 
@@ -81,6 +83,10 @@ function! LoveCS()
     execute writefile([g:colorscheme_file], g:love_path)
 endfunction
 
+function! LikeCS()
+    execute writefile([g:colorscheme_file], g:like_path)
+endfunction
+
 function! HateCS()
     call delete(g:love_path)
     let r=findfile(g:hate_path)
@@ -115,6 +121,7 @@ call Picker()
 autocmd VimEnter * echo 'using colorscheme: '.g:colorscheme_file
 command! Love call LoveCS()
 command! Hate call HateCS()
+command! Like call Picker()
 command! CS call ShowCS()
 command! Back call BackCS()
 command! Csn call Picker()
