@@ -38,7 +38,7 @@ function! Picker()
     if g:os == 'linux'
         let colorscheme_dirs=[$VIMRUNTIME.'/colors', '~/.vim/colors', '~/.vim/bundle/vim-colors/colors', '~/.vim/bundle/vim-colorschemes/colors']
     elseif g:os == 'win'
-	let colorscheme_dirs=[$VIMRUNTIME.'/colors', $HOME.'/vimfiles/colors']
+        let colorscheme_dirs=[$VIMRUNTIME.'/colors', $HOME.'/vimfiles/colors']
     endif
     let arr=[]
     for colorsheme_dir in colorscheme_dirs
@@ -84,7 +84,20 @@ function! LoveCS()
 endfunction
 
 function! LikeCS()
-    execute writefile([g:colorscheme_file], g:like_path)
+    let r=findfile(g:like_path)
+    if r != ''
+        let likes=readfile(g:like_path)
+    else
+        let likes=[]
+    endif
+    if len(likes) + 1 == g:total_colorschemes
+        redrawstatus
+        echo "She is the last one you got, Can't like it anymore, or :Back first."
+    else
+        call add(likes, g:colorscheme_file)
+        call writefile(likes, g:like_path)
+        redrawstatus
+    endif
 endfunction
 
 function! HateCS()
@@ -121,7 +134,7 @@ call Picker()
 autocmd VimEnter * echo 'using colorscheme: '.g:colorscheme_file
 command! Love call LoveCS()
 command! Hate call HateCS()
-command! Like call Picker()
+command! Like call LikeCS()
 command! CS call ShowCS()
 command! Back call BackCS()
 command! Csn call Picker()
