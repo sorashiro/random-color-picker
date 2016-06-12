@@ -100,6 +100,38 @@ function! LikeCS()
     endif
 endfunction
 
+function! NextCS()
+    if g:os == 'linux'
+        let colorscheme_dirs=[$VIMRUNTIME.'/colors', '~/.vim/colors', '~/.vim/bundle/vim-colors/colors', '~/.vim/bundle/vim-colorschemes/colors']
+    elseif g:os == 'win'
+        let colorscheme_dirs=[$VIMRUNTIME.'/colors', $HOME.'/vimfiles/colors']
+    endif
+    let arr=[]
+    for colorsheme_dir in colorscheme_dirs
+        let colorschemes=glob(colorsheme_dir.'/*.vim')
+        let arr+=split(colorschemes, '\n')
+    endfor
+    let g:total_colorschemes = len(arr)
+    let hates=[]
+    let r=findfile(g:hate_path)
+    if r != ''
+        let hates=readfile(g:hate_path)
+    endif
+    let r=findfile(g:love_path)
+    while 1
+        let rand=GetRAND()
+        let rand=rand%len(arr)
+        let g:colorscheme_file_path=arr[rand]
+        if index(hates, g:colorscheme_file_path) == -1
+            break
+        endif
+    endwhile
+    " colorscheme is /path/to/colorscheme_file.vim
+    " convert to colorscheme_file
+    let g:colorscheme_file=split(g:colorscheme_file_path, g:slash)[-1][:-5]
+    call ApplyCS()
+endfunction
+
 function! HateCS()
     call delete(g:love_path)
     let r=findfile(g:hate_path)
@@ -137,4 +169,5 @@ command! Hate call HateCS()
 command! Like call LikeCS()
 command! CS call ShowCS()
 command! Back call BackCS()
-command! Csn call Picker()
+command! Csn call NextCS()
+command! Golove call Picker()
